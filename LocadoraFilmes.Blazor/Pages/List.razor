@@ -1,0 +1,67 @@
+﻿@page "/list"
+
+@using LocadoraFilmes.Blazor.Models;
+@using LocadoraFilmes.Blazor.Responses;
+@inject NavigationManager NavigationManager;
+@inject LocadoraFilmes.Blazor.Services.Interfaces.IFilmeService _filmeService;
+@inject LocadoraFilmes.Blazor.Services.Interfaces.ISecurityService _securityService;
+
+<h3>Listar Filmes</h3>
+
+
+<NavLink class="nav-link" href="create">
+    <button class="btn btn-success btn-lg w-100 mb-3">Create Filme</button>
+  @*<span class="oi oi-home" aria-hidden="true"></span> Counter*@
+</NavLink>
+
+<div class="table-responsive">
+    <table class="table table-bordered border-dark table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Nome</th>
+                <th scope="col">Genero</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @if (filmes != null)
+            {
+                @foreach (var filme in filmes)
+                {
+                    <tr>
+                        <td data-idfilme="@filme.Id">@filme.Nome</td>
+                        <td data-idgenero="@filme.GeneroId">@filme.GeneroNome</td>
+                        <td>
+                            <NavLink class="nav-link" href="create">
+                                <button class="btn btn-warning w-100 mb-2">Editar Filme</button>
+                            </NavLink>
+                            
+                            <NavLink class="nav-link" href="delete">
+                                <button class="btn btn-danger w-100 mb-2">Editar Filme</button>
+                            </NavLink>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    List<FilmeResponse> filmes = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var token = await _securityService.GetTokenUserAsync();
+
+        var response = await _filmeService.GetAllFilmes();
+
+        filmes = response.Data;
+    }
+
+    protected override bool ShouldRender()
+    {
+        return base.ShouldRender();
+    }
+}

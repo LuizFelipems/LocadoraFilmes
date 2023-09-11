@@ -1,0 +1,50 @@
+﻿@page "/create"
+
+@using LocadoraFilmes.Blazor.Models
+@inject NavigationManager NavigationManager;
+@inject LocadoraFilmes.Blazor.Services.Interfaces.IFilmeService _filmeService;
+
+<h1>Criar Filme</h1>
+
+<EditForm Model="@createFilmeModel" OnValidSubmit="CreateFilme">
+
+    <div class="form-group mb-3">
+        <label for="nome">Nome</label>
+        <InputText @bind-Value="createFilmeModel.Nome" class="form-control" id="nome" name="nome" />
+    </div>
+
+    <div class="form-group mb-3">
+        <label for="generoId">Genero</label>
+        <InputSelect @bind-Value="generos.First().Id" class="form-control" id="generoId" name="generoId">
+            <option value=""></option>
+            @foreach (var g in generos)
+            {
+                <option value="@g.Id">@g.Nome</option>
+            }
+        </InputSelect>
+    </div>
+
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <button class="btn btn-success" type="submit">Salvar</button>
+
+</EditForm>
+
+@code {
+    CreateFilmeModel createFilmeModel = new();
+
+    List<GeneroModel> generos { get; set; }
+
+    async Task CreateFilme()
+    {
+        var response = await _filmeService.CreateFilme(createFilmeModel);
+
+        NavigationManager.NavigateTo("/list");
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        generos = _filmeService.GetAllGeneros();
+    }
+}
