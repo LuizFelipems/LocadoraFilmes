@@ -1,7 +1,7 @@
 ﻿using LocadoraFilmes.Application.Commons.Commands;
 using LocadoraFilmes.Application.Commons.Responses;
 using LocadoraFilmes.Application.UseCases.Locadoras.Responses;
-using System.Text.Json.Serialization;
+using LocadoraFilmes.Domain.Models;
 
 namespace LocadoraFilmes.Application.UseCases.Locadoras.Requests
 {
@@ -9,14 +9,18 @@ namespace LocadoraFilmes.Application.UseCases.Locadoras.Requests
     {
         public string CpfCliente { get; set; }
         public DateTime DataLocacao { get; set; }
+        public List<Guid> FilmeIds { get; set; }
 
-        [JsonIgnore]
-        public Guid FilmeId { get; set; }
-
-        public LocarFilmeCommand AssignFilmeId(Guid filmeId)
+        public List<LocacaoFilme> GenerateLocacaoFilmes()
         {
-            FilmeId = filmeId;
-            return this;
+            var ids = new List<LocacaoFilme>();
+
+            foreach (var id in FilmeIds)
+            {
+                ids.Add(new LocacaoFilme() { FilmeId = id });
+            }
+
+            return ids;
         }
     }
 }
