@@ -11,14 +11,14 @@ namespace LocadoraFilmes.Api.Endpoints
     {
         public static void MapLocacaoEndpoints(this WebApplication app)
         {
-            app.MapPut("/v1/locar/{filmeId}", LocarFilme)
+            app.MapPut("/v1/locar", LocarFilmes)
                .WithTags("Locacao")
                .ProducesProblem(400)
                .ProducesProblem(401)
                .ProducesProblem(404)
                .RequireAuthorization()
                .Produces<Response<LocacaoResponse>>(204)
-               .WithMetadata(new SwaggerOperationAttribute("Locar Filme"));
+               .WithMetadata(new SwaggerOperationAttribute("Locar Filmes"));
 
             app.MapGet("/v1/locacoes", GetAllLocacoes)
                .WithTags("Locacao")
@@ -30,9 +30,9 @@ namespace LocadoraFilmes.Api.Endpoints
                .WithMetadata(new SwaggerOperationAttribute("Get All Locacoes"));
         }
 
-        public static async Task<Response<LocacaoResponse>> LocarFilme([FromServices] IMediator _mediator, Guid filmeId, [FromBody] LocarFilmeCommand command)
+        public static async Task<Response<LocacaoResponse>> LocarFilmes([FromServices] IMediator _mediator, [FromBody] LocarFilmeCommand command)
         {
-            return await _mediator.Send(command.AssignFilmeId(filmeId));
+            return await _mediator.Send(command);
         }
 
         public static async Task<Response<List<LocacaoResponse>>> GetAllLocacoes([FromServices] IMediator _mediator)
